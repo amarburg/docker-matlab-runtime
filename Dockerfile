@@ -4,8 +4,8 @@ RUN apt-get update && apt-get install -y unzip wget
 
 RUN mkdir /mcr-install
 WORKDIR /mcr-install
-RUN wget http://ssd.mathworks.com/supportfiles/downloads/R2017b/deployment_files/R2017b/installers/glnxa64/MCR_R2017b_glnxa64_installer.zip && \
-    unzip MCR_R2017b_glnxa64_installer.zip && \
+RUN wget http://ssd.mathworks.com/supportfiles/downloads/R2018a/deployment_files/R2018a/installers/glnxa64/MCR_R2018a_glnxa64_installer.zip && \
+    unzip MCR_R2018a_glnxa64_installer.zip && \
     ./install -mode silent -agreeToLicense yes && \
     rm -Rf /mcr-install
 
