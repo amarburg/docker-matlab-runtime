@@ -1,5 +1,7 @@
 
-TAG = amarburg/matlab-runtime:latest
+TAG = amarburg/matlab-runtime:2019b
+
+default: help
 
 build:
 	docker build . --tag ${TAG}
