@@ -18,15 +18,17 @@ force_build:
 push:
 	docker push ${TAG}
 
-PROXY_PORT = 51234
 
+PROXY_PORT = 51234
+PROXY_CACHE_DIR = $(shell pwd)/.proxy-cache
 proxy:
 	echo "Set: export http_poxy=http://<local ip address>:${PROXY_PORT}/"
+	mkdir $(PROXY_CACHE_DIR)
 	docker run --rm -t --name docker-matlab-runtime-cache \
 							-p ${PROXY_PORT}:80 \
 							--sysctl net.ipv4.ip_local_port_range="1024 64000" \
 							-v $(shell pwd)/proxy/nginx.conf:/etc/nginx/nginx.conf:ro \
-							-v /tmp/docker-matlab-runtime-cache:/tmp/httpcache \
+							-v $(PROXY_CACHE_DIR):/tmp/httpcache \
 							nginx:stable-alpine
 
 
@@ -37,4 +39,4 @@ help:
 	@echo "make push               Push to Dockerhub"
 	@echo "make proxy              Start a local Nginx proxy for caching the huge downloads from Matlab"
 
-.PHONY: build force_build push help proxy
+.PHONY: build force_build push help proxy test
