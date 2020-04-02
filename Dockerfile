@@ -1,20 +1,26 @@
 FROM debian:stable
 
-## Somewhat randomly, the openjdk JDK is required for some functions to run...
+## Option to pass http and https proxy information into build
+ENV http_proxy ${http_proxy}
 
+RUN if [ ! -z "$http_proxy" ]; then sh -c "echo \"Acquire::HTTP::Proxy \\\"${http_proxy}\\\";\" > /etc/apt/apt.conf.d/proxy.conf"; fi
+
+RUN cat /etc/apt/apt.conf.d/proxy.conf
+
+## Somewhat randomly, the openjdk JDK is required for some functions to run...
 RUN apt-get update && \
     apt-get install -y unzip wget openjdk-11-jdk && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /mcr-install
 WORKDIR /mcr-install
-RUN wget http://ssd.mathworks.com/supportfiles/downloads/R2019b/Release/1/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2019b_Update_1_glnxa64.zip && \
-    unzip MATLAB_Runtime_R2019b_Update_1_glnxa64.zip && \
+RUN wget http://ssd.mathworks.com/supportfiles/downloads/R2020a/Release/0/deployment_files/installer/complete/glnxa64/MATLAB_Runtime_R2020a_glnxa64.zip && \
+    unzip MATLAB_Runtime_R2020a_glnxa64.zip && \
     ./install -mode silent -agreeToLicense yes && \
     rm -Rf /mcr-install
 
 ## There are reports that forcing Matlab to use system libstdc++ fixes some problems
-#RUN rm /usr/local/MATLAB/MATLAB_Runtime/v94/sys/os/glnxa64/libstdc++*
+# RUN rm /usr/local/MATLAB/MATLAB_Runtime/v94/sys/os/glnxa64/libstdc++*
 
 ENV MATLAB_INSTALL=/usr/local/MATLAB/MATLAB_Runtime/v97
 ENV XAPPLRESDIR=$MATLAB_INSTALL/X11/app-defaults
